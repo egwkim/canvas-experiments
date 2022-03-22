@@ -1,5 +1,5 @@
-class DrawingApp {
-  private static boxCreationInterval = 100;
+class SquareDrawingApp {
+  private static squareCreationInterval = 100;
   private static colorUpdateStep = 0.005;
 
   private canvas: HTMLCanvasElement;
@@ -7,9 +7,9 @@ class DrawingApp {
 
   private mouseDown: boolean;
 
-  private prevBoxTimestamp: number;
+  private prevSquareTimestamp: number;
 
-  private boxes: Box[];
+  private squares: Square[];
 
   private color: number;
 
@@ -22,9 +22,9 @@ class DrawingApp {
 
     this.mouseDown = false;
 
-    this.prevBoxTimestamp = 0;
+    this.prevSquareTimestamp = 0;
 
-    this.boxes = [];
+    this.squares = [];
 
     this.color = 0;
 
@@ -40,14 +40,14 @@ class DrawingApp {
 
     canvas.addEventListener('mousedown', (e) => {
       this.mouseDown = true;
-      this.createBox(e.x, e.y);
+      this.createSquare(e.x, e.y);
     });
 
     canvas.addEventListener('mousemove', (e) => {
       let now = performance.now();
-      if (this.mouseDown && now - this.prevBoxTimestamp > DrawingApp.boxCreationInterval) {
-        this.createBox(e.x, e.y);
-        this.prevBoxTimestamp = now;
+      if (this.mouseDown && now - this.prevSquareTimestamp > SquareDrawingApp.squareCreationInterval) {
+        this.createSquare(e.x, e.y);
+        this.prevSquareTimestamp = now;
       }
     });
 
@@ -65,10 +65,10 @@ class DrawingApp {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  private createBox(x: number, y: number, updateColor: boolean = true, color?: number) {
-    color ? this.boxes.push(new Box(x, y, color)) : this.boxes.push(new Box(x, y, this.color));
+  private createSquare(x: number, y: number, updateColor: boolean = true, color?: number) {
+    color ? this.squares.push(new Square(x, y, color)) : this.squares.push(new Square(x, y, this.color));
     if (updateColor) {
-      this.color += DrawingApp.colorUpdateStep;
+      this.color += SquareDrawingApp.colorUpdateStep;
       if (this.color === 1) {
         this.color = 0;
       }
@@ -82,18 +82,18 @@ class DrawingApp {
 
     context.fillStyle = 'aqua';
 
-    let index = this.boxes.length - 1;
+    let index = this.squares.length - 1;
 
     while (index !== -1) {
-      if (!this.boxes[index].isAlive()) {
-        this.boxes.splice(index, 1);
+      if (!this.squares[index].isAlive()) {
+        this.squares.splice(index, 1);
       }
       index -= 1;
     }
 
-    this.boxes.forEach((box) => {
-      box.update();
-      box.draw(context);
+    this.squares.forEach((square) => {
+      square.update();
+      square.draw(context);
     });
 
     context.fill();
@@ -102,7 +102,9 @@ class DrawingApp {
   };
 }
 
-class Box {
+class Square {
+  private static lifespan = 200;
+
   private x: number;
   private y: number;
   private size: number;
@@ -125,20 +127,20 @@ class Box {
   }
 
   public isAlive(): boolean {
-    return this.tick < 200;
+    return this.tick < Square.lifespan;
   }
 
   public draw(context: CanvasRenderingContext2D) {
-    context.fillStyle = color2RGBString(this.color);
-    context.globalAlpha = 1 - this.tick / 200;
+    context.fillStyle = hue2RGBString(this.color);
+    context.globalAlpha = 1 - this.tick / Square.lifespan;
     context.fillRect(this.x, this.y, this.size, this.size);
   }
 }
 
-new DrawingApp();
+new SquareDrawingApp();
 
-function color2RGBString(color: number): string {
-  const rgb = HSVtoRGB(color, 1, 1);
+function hue2RGBString(hue: number): string {
+  const rgb = HSVtoRGB(hue, 1, 1);
   return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 }
 
