@@ -1,4 +1,4 @@
-import { CanvasApp, Dictionary, Vector2D } from './main.js';
+import { CanvasApp, Vector2D } from './main.js';
 import { LSystem } from './l-system.js';
 
 class TreeCanvasApp extends CanvasApp {
@@ -11,14 +11,15 @@ class TreeCanvasApp extends CanvasApp {
 
   protected init(): void {
     this.trees = [];
-    this.trees.push(new Tree(40, 40));
+    this.trees.push(new Tree(40, 40)); // Temporary
     this.seeds = [];
-    this.seeds.push(new Seed(50, 50));
+    this.seeds.push(new Seed(50, 50)); // Temporary
   }
 
   protected addListeners(): void {
     super.addListeners();
 
+    // TODO Create seed when user clicks.
     this.canvas.addEventListener('mousedown', () => {});
   }
 
@@ -48,7 +49,6 @@ class TreeCanvasApp extends CanvasApp {
     let context = this.context;
 
     this.seeds.forEach((seed) => seed.render(context));
-
     this.trees.forEach((tree) => tree.render(context));
   }
 }
@@ -81,6 +81,7 @@ class Seed {
     this.velocity.add(Seed.acceleration);
   }
 
+  // TODO Change the appearance of the seed object.
   public render(context: CanvasRenderingContext2D): void {
     context.beginPath();
     context.moveTo(this.pos.x, this.pos.y);
@@ -94,6 +95,7 @@ class Seed {
 class Tree extends LSystem {
   static axiom = '0';
   static rules = { '0': '01', '1': '0' };
+  // TODO Change Tree > drawingRules
   static drawingRules = [
     [1, 0],
     [0, 90],
