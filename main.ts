@@ -1,4 +1,8 @@
-export { Vector, CanvasApp };
+export { CanvasApp, Dictionary, Vector2D };
+
+interface Dictionary {
+  [key: string]: string;
+}
 
 class Canvas {
   private _canvas: HTMLCanvasElement;
@@ -30,11 +34,15 @@ class CanvasApp extends Canvas {
   constructor() {
     super();
 
+    this.init();
+
     this.addListeners();
     this.resizeCanvas();
 
     this.animate();
   }
+
+  protected init(): void {}
 
   protected addListeners(): void {
     window.addEventListener('resize', this.resizeCanvas);
@@ -50,18 +58,18 @@ class CanvasApp extends Canvas {
   }
 
   protected animate(): void {
+    this.update();
     this.clearCanvas();
     this.render();
     requestAnimationFrame(() => this.animate());
   }
 
+  protected update(): void {}
+
   protected render(): void {}
 }
 
 class Vector extends Array {
-  private _size: number;
-  private updated: boolean;
-
   static add(...vectors: Vector[]): Vector {
     let maxLen: number = Math.max(...vectors.map((v) => v.length));
     let sum = new Vector(maxLen);
@@ -70,6 +78,9 @@ class Vector extends Array {
     });
     return sum;
   }
+
+  private _size: number;
+  private updated: boolean;
 
   public get size(): number {
     if (this.updated) {
@@ -104,5 +115,41 @@ class Vector extends Array {
   public scale(scaler: number): void {
     this.forEach((_value, index) => (this[index] *= scaler));
     this.updated = true;
+  }
+
+  public normalize(): void {
+    this.scale(1 / this.size);
+  }
+}
+
+class Vector2D extends Vector {
+  constructor(...items: [number, number]) {
+    super(...items);
+  }
+
+  public get x(): number {
+    return this[0];
+  }
+  public set x(v: number) {
+    this[0] = v;
+  }
+
+  public get y(): number {
+    return this[1];
+  }
+  public set y(v: number) {
+    this[1] = v;
+  }
+
+  rotate(rad: number) {
+    let oldx = this.x;
+    let oldy = this.y;
+
+    this.x = oldx * Math.cos(rad) + oldy * Math.sin(rad);
+    this.y = -oldx * Math.sin(rad) + oldy * Math.cos(rad);
+  }
+
+  rotateDeg(deg: number) {
+    this.rotate((deg * Math.PI) / 180);
   }
 }
