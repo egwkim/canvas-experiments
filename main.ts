@@ -31,8 +31,12 @@ class Canvas {
 }
 
 class CanvasApp extends Canvas {
-  constructor() {
+  protected fps: number;
+
+  constructor(fps: number = 60) {
     super();
+
+    this.fps = fps;
 
     this.init();
 
@@ -61,7 +65,9 @@ class CanvasApp extends Canvas {
     this.update();
     this.clearCanvas();
     this.render();
-    requestAnimationFrame(() => this.animate());
+    setTimeout(() => {
+      requestAnimationFrame(() => this.animate());
+    }, 1000 / this.fps);
   }
 
   protected update(): void {}

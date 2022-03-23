@@ -47,23 +47,19 @@ class TreeCanvasApp extends CanvasApp {
   protected render(): void {
     let context = this.context;
 
-    context.beginPath();
-
     this.seeds.forEach((seed) => seed.render(context));
-    this.trees.forEach((tree) => tree.render(context));
 
-    context.strokeStyle = 'white';
-    context.lineWidth = 20;
-    context.stroke();
+    this.trees.forEach((tree) => tree.render(context));
   }
 }
 
 class Seed {
-  static acceleration = new Vector2D(0, 1);
+  static acceleration = new Vector2D(0, 0.1);
 
-  private pos: Vector2D;
+  public pos: Vector2D;
+  public prev_pos: Vector2D;
+
   private velocity: Vector2D;
-  private prev_pos: Vector2D;
 
   private destinateY: number;
 
@@ -79,7 +75,8 @@ class Seed {
   }
 
   public update(): void {
-    this.prev_pos = this.pos;
+    this.prev_pos.x = this.pos.x;
+    this.prev_pos.y = this.pos.y;
     this.pos.add(this.velocity);
     this.velocity.add(Seed.acceleration);
   }
@@ -87,11 +84,10 @@ class Seed {
   public render(context: CanvasRenderingContext2D): void {
     context.beginPath();
     context.moveTo(this.pos.x, this.pos.y);
-    context.lineTo(this.prev_pos.x, this.prev_pos.y);
+    context.lineTo(this.pos.x, this.pos.y - this.velocity.y * 20);
     context.strokeStyle = 'white';
+    context.lineWidth = 10;
     context.stroke();
-
-    console.log(this.pos.x, this.pos.y);
   }
 }
 
@@ -121,9 +117,7 @@ class Tree extends LSystem {
   public update() {
     super.update();
     this.life -= 1;
-    console.log('updated');
   }
-
 
   // TODO Tree render method
   public render(context: CanvasRenderingContext2D): void {}
