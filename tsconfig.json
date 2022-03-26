@@ -1,9 +1,6 @@
 {
+  "extends": "./tsconfig.prod.json",
   "compilerOptions": {
-    "target": "es6",
-    "module": "es6",
-    "outDir": "./dist",
-    "sourceMap": true,
-    "lib": ["es6", "dom"]
+    "sourceMap": true
   }
 }
