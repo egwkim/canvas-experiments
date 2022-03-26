@@ -1,14 +1,16 @@
 .PHONY: all deploy clean
 
-all: dist dist/index.html
+all: dist dist/index.html dist/style.css
 
 dist:
 	git worktree add dist gh-pages
 
-# Replace this rule with whatever builds your project
 dist/index.html: src/index.html
 	cp $< $@
 	tsc --project tsconfig.prod.json
+
+dist/style.css: src/style.css
+	cp $< $@
 
 deploy: all
 	cd dist && \
