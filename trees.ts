@@ -149,7 +149,7 @@ class Tree extends LSystem {
   public update() {
     super.update();
     this.life -= 1;
-    console.log(this.state);
+    console.log(this.state); // Temporary
   }
 
   // TODO Tree render method
