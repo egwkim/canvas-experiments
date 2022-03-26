@@ -1,4 +1,4 @@
-export { CanvasApp, Dictionary, Vector2D };
+export { CanvasApp, Dictionary, Vector2D, hue2RGBString, HSVtoRGB };
 
 interface Dictionary {
   [key: string]: string;
@@ -158,4 +158,43 @@ class Vector2D extends Vector {
   rotateDeg(deg: number) {
     this.rotate((deg * Math.PI) / 180);
   }
+}
+
+function hue2RGBString(hue: number): string {
+  const rgb = HSVtoRGB(hue, 1, 1);
+  return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+}
+
+function HSVtoRGB(h: number, s: number, v: number) {
+  let r: number, g: number, b: number, i: number, f: number, p: number, q: number, t: number;
+  i = Math.floor(h * 6);
+  f = h * 6 - i;
+  p = v * (1 - s);
+  q = v * (1 - f * s);
+  t = v * (1 - (1 - f) * s);
+  switch (i % 6) {
+    case 0:
+      (r = v), (g = t), (b = p);
+      break;
+    case 1:
+      (r = q), (g = v), (b = p);
+      break;
+    case 2:
+      (r = p), (g = v), (b = t);
+      break;
+    case 3:
+      (r = p), (g = q), (b = v);
+      break;
+    case 4:
+      (r = t), (g = p), (b = v);
+      break;
+    case 5:
+      (r = v), (g = p), (b = q);
+      break;
+  }
+  return {
+    r: Math.round(r * 255),
+    g: Math.round(g * 255),
+    b: Math.round(b * 255),
+  };
 }
